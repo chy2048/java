@@ -1,1 +1,10 @@
 离线测试的时候方便模拟接口格式，免去网络不通等各种蛋疼的问题。
+
+
+把 moco-runner-0.11.0-standalone.jar  和 test.json 文件拷贝到服务器的相同目录上。
+
+test.json里面的文件定义了接口参数以及返回的数据。
+
+启动方式
+
+java -jar moco-runner-0.11.0-standalone.jar start -p 18080 -c test.json
