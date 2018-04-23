@@ -34,7 +34,7 @@ public class SpringMetrics extends MetricsConfigurerAdapter {
 	@PostConstruct
 	public void init() {
 		try {
-			HexinGangliaReporter reporter = HexinGangliaReporter.forRegistry(metricRegistry)
+			MyGangliaReporter reporter = MyGangliaReporter.forRegistry(metricRegistry)
 					.build(new GMetric(ganglia_ip, ganglia_port, GMetric.UDPAddressingMode.MULTICAST, 1));
 			reporter.start(ganglia_period, TimeUnit.SECONDS);
 			registerReporter(reporter);
