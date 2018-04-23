@@ -1,4 +1,4 @@
 通过spring的aop给代码的方法增加metrics耗时监控。
-再通过metricsReporter自带的ganglia集成功能，把监控数据发送到ganglia上作可视化展示（也可以打印到控制台等）
+再通过GangliaReporter，把监控数据发送到ganglia上作可视化展示（也可以打印到控制台、jmx等）
 
 查问题神器
