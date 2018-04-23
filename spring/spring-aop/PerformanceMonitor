@@ -1,0 +1,71 @@
+package mypackage.aspect;
+
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
+import org.apache.hadoop.mapred.lib.LazyOutputFormat;
+import org.apache.ibatis.javassist.bytecode.stackmap.TypeData;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Method;
+
+/**
+ * 模块耗时监控
+ */
+@Aspect
+@Component
+public class PerformanceMonitor {
+
+    private final static Logger logger = LoggerFactory.getLogger(PerformanceMonitor.class);
+
+    @Autowired
+    private MetricRegistry metricRegistry;
+
+    //  * com.hexin.cbas.recsys.core.recall.*.recall(..)) 
+    // 第一个 * 表示匹配任意返回值
+    // com.hexin.cbas.recsys.core.recall 表示扫描这个包下面的（包括子包） 
+    // recall  名为recall的方法
+    // (..) 参数为任意
+    @Pointcut(
+            "execution(* com.hexin.cbas.recsys.core.recall.*.recall(..)) || " +
+            "execution(* com.hexin.cbas.recsys.core.sort.*.sort(..)) || " +
+            "execution(* com.hexin.cbas.recsys.core.rule.*.rule(..)) "
+    )
+    
+    //切面方法，这个名字随便起，需要和下面的@Around("pointCutMethod()") 对应
+    private void pointCutMethod(){
+
+    }
+ 
+    /**
+      *  为切面增加耗时统计
+      */
+    @Around("pointCutMethod()")
+    public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
+        Object obj = pjp.getTarget();
+        if(obj instanceof TestRecall ||
+                obj instanceof TestSort ||
+                obj instanceof TestRule){
+            String methodName = pjp.getSignature().getName();
+            String className =  obj.getClass().getName();
+            String realName = className + "." + methodName;
+            Timer timer = metricRegistry.timer(realName);
+            Timer.Context context = timer.time();
+            try{
+                return pjp.proceed();
+            }finally {
+                context.stop();
+            }
+        }else{
+            return pjp.proceed();
+        }
+    }
+}
