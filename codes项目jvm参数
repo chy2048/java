@@ -1,0 +1,8 @@
+-server -Xms2048m -Xmx2048m -Xmn512m -Xss256k
+-XX:MaxNewSize=1024m
+-XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:+CMSClassUnloadingEnabled
+-XX:+DisableExplicitGC -XX:+UseCMSInitiatingOccupancyOnly
+-XX:CMSInitiatingOccupancyFraction=68 -verbose:gc -XX:+PrintGCDetails
+-XX:+PrintGCDateStamps -XX:+HeapDumpOnOutOfMemoryError
+-XX:HeapDumpPath=/usr/run/logs/jvm
+-XX:ErrorFile=/usr/run/logs/jvm/hs_err_pid%p.log *.war
