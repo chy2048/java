@@ -1,0 +1,32 @@
+前端需要提交复杂对象到后端Controller层的时候，可以这样操作
+
+客户端js代码
+var obj = {
+   复杂的json对象
+};
+$.ajax({
+    url: "http://ip:port/url",        //http协议头不加可能会报错
+    data: JSON.stringify(obj),
+    contentType: "application/json;charset=utf-8",
+    type: "POST",
+    dataType: "json",
+    success: function (data) {
+        console.log(data);
+    },
+    error: function (error) {
+        console.log(error);
+    }
+});
+
+
+服务端代码
+@RequestMapping(value = "/mylocation", method = {RequestMethod.POST,RequestMethod.GET})
+public void doSomeThing(@RequestBody Object obj){
+    try{
+        //todo  这里的Object可以换成任意对象
+    }catch (Exception e){
+        //todo
+    }
+}
+
+
