@@ -39,7 +39,6 @@ public class PerformanceMonitor {
             "execution(* com.hexin.cbas.recsys.core.sort.*.sort(..)) || " +
             "execution(* com.hexin.cbas.recsys.core.rule.*.rule(..)) "
     )
-    
     //切面方法，这个名字随便起，需要和下面的@Around("pointCutMethod()") 对应
     private void pointCutMethod(){
 
