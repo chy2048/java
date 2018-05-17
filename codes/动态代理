@@ -1,0 +1,82 @@
+代理模式是常用的Java设计模式，它的特征是代理类与委托类有同样的接口，代理类主要负责为委托类预处理消息、过滤消息、把消息转发给委托类，以及事后处理消息等。代理类与委托类之间通常会存在关联关系，一个代理类的对象与一个委托类的对象关联，代理类的对象本身并不真正实现服务，而是通过调用委托类的对象的相关方法，来提供特定的服务。按照代理类的创建时期，代理类可分为两种。
+
+静态代理类：由程序员创建或由特定工具自动生成源代码，再对其编译。在程序运行前，代理类的.class文件就已经存在了。
+动态代理类：在程序运行时，运用反射机制动态创建而成。
+静态代理通常只代理一个类，动态代理是代理一个接口下的多个实现类。
+静态代理事先知道要代理的是什么，而动态代理不知道要代理什么东西，只有在运行时才知道。
+动态代理是实现JDK里的InvocationHandler接口的invoke方法，但注意的是代理的是接口，也就是你的业务类必须要实现接口，通过Proxy里的newProxyInstance得到代理对象。
+
+先来看下静态代理
+//一个普通的interface
+public interface Subject{
+  public void doSomething();
+}
+
+//RealSubject类实现Subject
+public class RealSubject implements Subject   {   
+  public void doSomething()   {   
+    System.out.println( "call doSomething()" );   
+  }   
+}
+
+//代理类（静态代理）
+public class SubjectProxy implements Subject{
+  //被代理的实例
+  public Subject subimpl = new RealSubject();
+  //代理方法，实际执行的是被代理实例的soSomething方法
+  public void doSomething(){
+     //业务代码
+     subimpl.doSomething();
+  }
+}
+
+
+//测试
+public class TestProxy {
+   public static void main(String args[]){
+       //new 一个代理类
+       Subject sub = new SubjectProxy();
+       //执行代理类的doSomething方法
+       sub.doSomething();
+   }
+}
+
+
+下面来看动态代理
+import java.lang.reflect.InvocationHandler;  
+import java.lang.reflect.Method;  
+import java.lang.reflect.Proxy;  
+/*
+ *  动态代理类
+ */
+public class ProxyHandler implements InvocationHandler{
+    //被代理的对象
+    private Object tar;
+    //绑定委托对象，并返回代理类
+    public Object test(Object tar){
+        this.tar = tar;
+        //绑定该类实现的所有接口，**取得代理类 ** , （运用反射机制动态创建而成）
+        return Proxy.newProxyInstance(tar.getClass().getClassLoader(),
+                                      tar.getClass().getInterfaces(),
+                                      this);
+    }    
+
+    public Object invoke(Object proxy , Method method , Object[] args)throws Throwable{
+        Object result = null;
+        //这里就可以进行所谓的AOP编程了
+        //在调用具体函数方法前，执行功能处理
+        result = method.invoke(tar,args);
+        //在调用具体函数方法后，执行功能处理
+        return result;
+    }
+}
+
+//测试
+public class TestProxy{
+    public static void main(String args[]){
+           ProxyHandler proxy = new ProxyHandler();
+           //绑定该类实现的所有接口
+           Subject sub = (Subject) proxy.test(new RealSubject());
+           sub.doSomething();
+    }
+}
