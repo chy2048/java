@@ -6,4 +6,8 @@ test.json里面的文件定义了接口参数以及返回的数据。
 
 启动方式
 
-java -jar moco-runner-0.11.0-standalone.jar start -p 18080 -c test.json
+java -jar moco-runner-0.11.0-standalone.jar start -p 18080 -c test.json &
+
+
+网上看到一篇详细的配置
+https://blog.csdn.net/shensky711/article/details/52770686
