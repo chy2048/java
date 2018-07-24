@@ -1,0 +1,1 @@
+mvn install:install-file -Dfile=C:\workspace\test-jar.jar -DgroupId=xxx -DartifactId=xxx -Dversion=1.0 -Dpackaging=jar
