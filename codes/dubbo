@@ -1,0 +1,6 @@
+ReferenceBean<Object> referenceBean = new ReferenceBean<>();
+
+referenceBean.setInterface(Object.class);
+referenceBean.setGroup("");
+
+Object o = (Object) referenceBean.getObject();
